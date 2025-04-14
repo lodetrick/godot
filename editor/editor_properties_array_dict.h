@@ -178,6 +178,7 @@ class EditorPropertyDictionary : public EditorProperty {
 	struct Slot {
 		Ref<EditorPropertyDictionaryObject> object;
 		HBoxContainer *container = nullptr;
+		HBoxContainer *sub_editor_container = nullptr;
 		int index = -1;
 		Variant::Type type = Variant::VARIANT_MAX;
 		Variant::Type key_type = Variant::VARIANT_MAX;
@@ -246,7 +247,7 @@ class EditorPropertyDictionary : public EditorProperty {
 	void _change_type_menu(int p_index);
 
 	void _add_key_value();
-	void _object_id_selected(const StringName &p_property, ObjectID p_id);
+	void _object_id_selected(const StringName &p_property, ObjectID p_id, const String &p_slot_key);
 	void _remove_pressed(int p_slot_index);
 
 	Variant::Type key_subtype;

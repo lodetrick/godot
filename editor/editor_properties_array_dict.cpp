@@ -1055,6 +1055,7 @@ void EditorPropertyDictionary::_add_key_value() {
 
 void EditorPropertyDictionary::_create_new_property_slot(int p_idx) {
 	HBoxContainer *hbox = memnew(HBoxContainer);
+	HBoxContainer *editor_container = memnew(HBoxContainer);
 
 	EditorProperty *prop_key = nullptr;
 	if (p_idx != EditorPropertyDictionaryObject::NEW_KEY_INDEX && p_idx != EditorPropertyDictionaryObject::NEW_VALUE_INDEX) {
@@ -1434,7 +1435,32 @@ void EditorPropertyDictionary::_remove_pressed(int p_slot_index) {
 	emit_changed(get_edited_property(), dict);
 }
 
-void EditorPropertyDictionary::_object_id_selected(const StringName &p_property, ObjectID p_id) {
+void EditorPropertyDictionary::_object_id_selected(const StringName &p_property, ObjectID p_id, const String &p_slot_key = "") {
+	if (p_slot_key != "") {
+		Slot *changed_slot = nullptr;
+		for (Slot &slot : slots) {
+			if (slot.key_name == p_slot_key) {
+				changed_slot = &slot;
+				break;
+			}
+		}
+
+		if (changed_slot != nullptr) {
+			bool both_active = changed_slot->prop->has_bottom_editor() == changed_slot->prop_key->has_bottom_editor();
+			Control *prop_reference = both_active ? static_cast<Control *>(changed_slot->prop) : static_cast<Control *>(changed_slot->container);
+			if (changed_slot->prop->get_label_reference() != prop_reference) {
+				changed_slot->prop->set_label_reference(prop_reference);
+				changed_slot->prop->queue_redraw();
+			}
+
+			Control *prop_key_reference = both_active ? static_cast<Control *>(changed_slot->prop_key) : static_cast<Control *>(changed_slot->container);
+			if (changed_slot->prop_key->get_label_reference() != prop_key_reference) {
+				changed_slot->prop_key->set_label_reference(prop_key_reference);
+				changed_slot->prop_key->queue_redraw();
+			}
+		}
+	}
+
 	emit_signal(SNAME("object_id_selected"), p_property, p_id);
 }
 

@@ -135,6 +135,7 @@ private:
 	Vector<Control *> focusables;
 	Control *label_reference = nullptr;
 	Control *bottom_editor = nullptr;
+	Control *bottom_editor_reference = nullptr;
 	PopupMenu *menu = nullptr;
 
 	HashMap<StringName, Variant> cache;
@@ -223,6 +224,7 @@ public:
 
 	void set_label_reference(Control *p_control);
 	void set_bottom_editor(Control *p_control);
+	void set_bottom_editor_reference(Control *p_control);
 
 	void set_use_folding(bool p_use_folding);
 	bool is_using_folding() const;

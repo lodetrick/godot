@@ -1107,6 +1107,16 @@ void EditorProperty::set_bottom_editor(Control *p_control) {
 	}
 }
 
+void EditorProperty::set_bottom_editor_reference(Control *p_control) {
+	if (bottom_editor && (bottom_editor_reference != p_control)) {
+		bottom_editor->get_parent()->remove_child(bottom_editor);
+		p_control->add_child(bottom_editor);
+		return;
+	}
+	
+	bottom_editor_reference = p_control;
+}
+
 Variant EditorProperty::_get_cache_value(const StringName &p_prop, bool &r_valid) const {
 	return object->get(p_prop, &r_valid);
 }
@@ -1418,6 +1428,7 @@ EditorProperty::EditorProperty() {
 	selected_focusable = -1;
 	label_reference = nullptr;
 	bottom_editor = nullptr;
+	bottom_editor_reference = this;
 	menu = nullptr;
 	set_process_shortcut_input(true);
 }
