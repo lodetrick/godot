@@ -963,6 +963,16 @@ Callable Callable::bind(VarArgs... p_args) const {
 	return bindp(sizeof...(p_args) == 0 ? nullptr : (const Variant **)argptrs, sizeof...(p_args));
 }
 
+template <typename... VarArgs>
+Callable Callable::bind_map(VarArgs... p_args) const {
+	Variant args[sizeof...(p_args) + 1] = { p_args..., Variant() }; // +1 makes sure zero sized arrays are also supported.
+	const Variant *argptrs[sizeof...(p_args) + 1];
+	for (uint32_t i = 0; i < sizeof...(p_args); i++) {
+		argptrs[i] = &args[i];
+	}
+	return bind_mapp(sizeof...(p_args) == 0 ? nullptr : (const Variant **)argptrs, sizeof...(p_args));
+}
+
 Variant &Array::Iterator::operator*() const {
 	if (unlikely(read_only)) {
 		*read_only = *element_ptr;

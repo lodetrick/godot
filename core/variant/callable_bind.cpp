@@ -30,8 +30,6 @@
 
 #include "callable_bind.h"
 
-//////////////////////////////////
-
 uint32_t CallableCustomBind::hash() const {
 	return callable.hash();
 }
@@ -170,6 +168,7 @@ CallableCustomBind::CallableCustomBind(const Callable &p_callable, const Vector<
 CallableCustomBind::~CallableCustomBind() {
 }
 
+//////////////////////////////////
 //////////////////////////////////
 
 uint32_t CallableCustomUnbind::hash() const {

@@ -103,6 +103,10 @@ public:
 	Callable bindp(const Variant **p_arguments, int p_argcount) const;
 	Callable unbind(int p_argcount) const;
 
+	template <typename... VarArgs>
+	Callable bind_map(VarArgs... p_args) const;
+	Callable bind_mapp(const Variant **p_arguments, int p_argcount) const;
+
 	Object *get_object() const;
 	ObjectID get_object_id() const;
 	StringName get_method() const;

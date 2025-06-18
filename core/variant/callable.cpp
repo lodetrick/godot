@@ -34,6 +34,7 @@
 #include "core/object/ref_counted.h"
 #include "core/object/script_language.h"
 #include "core/variant/callable_bind.h"
+#include "core/variant/callable_bind_map.h"
 #include "core/variant/variant_callable.h"
 
 void Callable::call_deferredp(const Variant **p_arguments, int p_argcount) const {
@@ -147,6 +148,19 @@ Callable Callable::bindv(const Array &p_arguments) {
 Callable Callable::unbind(int p_argcount) const {
 	ERR_FAIL_COND_V_MSG(p_argcount <= 0, Callable(*this), "Amount of unbind() arguments must be 1 or greater.");
 	return Callable(memnew(CallableCustomUnbind(*this, p_argcount)));
+}
+
+Callable Callable::bind_mapp(const Variant **p_arguments, int p_argcount) const {
+	LocalVector<CallableCustomBindMap::CustomBind> args;
+	args.resize(p_argcount);
+	for (int i = 0; i < p_argcount; i++) {
+		Variant v = *p_arguments[i];
+		// if (v.get_class_name())
+		// print_line("Class: " + v.get_class_name());
+		// BindArg *placeholder = BindArg(*p_arguments[i]);
+		args[i] = CallableCustomBindMap::CustomBind(*p_arguments[i]);
+	}
+	return Callable(memnew(CallableCustomBindMap(*this, args)));
 }
 
 bool Callable::is_valid() const {
