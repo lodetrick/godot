@@ -199,7 +199,7 @@ EditorDock *EditorBottomPanel::_get_dock_from_control(Control *p_control) const 
 	return Object::cast_to<EditorDock>(p_control->get_parent());
 }
 
-Button *EditorBottomPanel::add_item(String p_text, Control *p_item, const Ref<Shortcut> &p_shortcut, bool p_at_front) {
+Button *EditorBottomPanel::add_item(String p_text, Control *p_item, const Ref<Shortcut> &p_shortcut) {
 	EditorDock *dock = memnew(EditorDock);
 	dock->add_child(p_item);
 	dock->set_title(p_text);
@@ -216,7 +216,9 @@ Button *EditorBottomPanel::add_item(String p_text, Control *p_item, const Ref<Sh
 	// Still return a dummy button for compatibility reasons.
 	Button *tb = memnew(Button);
 	tb->set_toggle_mode(true);
-	tb->connect(SceneStringName(visibility_changed), callable_mp(this, &EditorBottomPanel::_on_button_visibility_changed).bind(tb, dock));
+	tb->set_shortcut(p_shortcut);
+	tb->connect(SceneStringName(visibility_changed), callable_mp(this, &EditorBottomPanel::_on_legacy_button_visibility_changed).bind(tb, dock));
+	tb->connect(SceneStringName(pressed), callable_mp(this, &EditorBottomPanel::_on_legacy_button_pressed).bind(tb, dock));
 	legacy_buttons.push_back(tb);
 	return tb;
 }
@@ -238,11 +240,19 @@ void EditorBottomPanel::remove_item(Control *p_item) {
 	dock->queue_free();
 }
 
-void EditorBottomPanel::_on_button_visibility_changed(Button *p_button, EditorDock *p_dock) {
+void EditorBottomPanel::_on_legacy_button_visibility_changed(Button *p_button, EditorDock *p_dock) {
 	if (p_button->is_visible()) {
 		p_dock->open();
 	} else {
 		p_dock->close();
+	}
+}
+
+void EditorBottomPanel::_on_legacy_button_pressed(Button *p_button, EditorDock *p_dock) {
+	if (p_button->is_pressed()) {
+		p_dock->make_visible();
+	} else {
+		hide_bottom_panel();
 	}
 }
 
